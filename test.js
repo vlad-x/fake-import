@@ -3,18 +3,18 @@ var test = require('tape')
 
 test('test imports', function (t) {
   t.plan(8);
-  t.ok(fakeImport('import React from \'React\'') == 'const React = require("React")');
-  t.ok(fakeImport('import React from "React"') == 'const React = require("React")');
+  t.ok(fakeImport('import React from \'React\'') == 'const React = require("React");\n');
+  t.ok(fakeImport('import React from "React"') == 'const React = require("React");\n');
 
-  t.ok(fakeImport('import\t\'React\'') == 'require("React")');
-  t.ok(fakeImport('import\n\t\n"React"') == 'require("React")');
+  t.ok(fakeImport('import\t\'React\'') == 'require("React");\n');
+  t.ok(fakeImport('import\n\t\n"React"') == 'require("React");\n');
 
-  t.ok(fakeImport('import {h1, p} from \'React\'') == 'var h1 = require("React").h1;var p = require("React").p;');
-  t.ok(fakeImport('import   {\th1,\t\tp  } from "React"') == 'var h1 = require("React").h1;var p = require("React").p;');
+  t.ok(fakeImport('import {h1, p} from \'React\'') == 'var h1 = require("React").h1;\nvar p = require("React").p;');
+  t.ok(fakeImport('import   {\th1,\t\tp  } from "React"') == 'var h1 = require("React").h1;\nvar p = require("React").p;');
 
 
-  t.ok(fakeImport('import React, {h1, p} from \'React\'') == 'const React = require("React");var h1 = require("React").h1;var p = require("React").p;');
-  t.ok(fakeImport('import React  ,   {\th1,\t\tp  } from "React"') == 'const React = require("React");var h1 = require("React").h1;var p = require("React").p;');
+  t.ok(fakeImport('import React, {h1, p} from \'React\'') == 'const React = require("React");\nvar h1 = require("React").h1;\nvar p = require("React").p;');
+  t.ok(fakeImport('import React  ,   {\th1,\t\tp  } from "React"') == 'const React = require("React");\nvar h1 = require("React").h1;\nvar p = require("React").p;');
 
 })
 

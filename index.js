@@ -4,11 +4,11 @@ function expandImport(all, $1, $2) {
     	part = part.trim();
     	return 'var ' + part + ' = require("' + $2 + '").' + part + ';'
     })
-    .join('');
+    .join('\n');
 }
 
 function expandImport2(all, $1, $2, $3) {
-  return 'const '+$1+' = require("'+$3+'");' + expandImport(all, $2, $3);
+  return 'const '+$1+' = require("'+$3+'");\n' + expandImport(all, $2, $3);
 }
 
 function starImportNotSupported(all, $1) {
@@ -16,12 +16,15 @@ function starImportNotSupported(all, $1) {
 }
 
 module.exports = function fakeImports (src) {
-  src = src.replace(/import\s*([^{]*?)\s*from\s*'(.*?)'/g, 'const $1 = require("$2")');
-  src = src.replace(/import\s*([^{]*?)\s*from\s*"(.*?)"/g, 'const $1 = require("$2")');
-  src = src.replace(/import\s*"(.*?)"/g, 'require("$1")');
-  src = src.replace(/import\s*'(.*?)'/g, 'require("$1")');
+  src = src.replace(/import\s*"(.*?)"/g, 'require("$1");\n');
+  src = src.replace(/import\s*'(.*?)'/g, 'require("$1");\n');
+
+  src = src.replace(/import\s*([^{]*?)\s*from\s*'(.*?)'/g, 'const $1 = require("$2");\n');
+  src = src.replace(/import\s*([^{]*?)\s*from\s*"(.*?)"/g, 'const $1 = require("$2");\n');
+
   src = src.replace(/import\s*\*\sfrom\s'(.*?)'/g, starImportNotSupported);
   src = src.replace(/import\s*\*\sfrom\s"(.*?)"/g, starImportNotSupported);
+
   src = src.replace(/import\s*{(.*?)}\s*from\s*"(.*?)"\s*/g, expandImport);
   src = src.replace(/import\s*{(.*?)}\s*from\s*'(.*?)'\s*/g, expandImport);
   src = src.replace(/import\s*([^{]*?)\s*,\s*{(.*?)}\s*from\s*"(.*?)"\s*/g, expandImport2);
